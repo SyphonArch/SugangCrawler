@@ -26,4 +26,7 @@ while True:
             else:
                 if registrant_count < initial_registrant_counts[course_id]:
                     emailer.send(f"{subject_id} 빈자리 알림", f"{subject_id}의 {record['강좌번호']} 분반에 자리가 확인되었습니다.")
+                    print('Message Sent!')
+                    initial_registrant_counts[course_id] = registrant_count
+    print(initial_registrant_counts)
     sleep(3)
