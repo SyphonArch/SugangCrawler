@@ -12,6 +12,7 @@ initial_registrant_counts = {}
 
 while True:
     for subject_id in target_courses:
+        print(f"{subject_id} 확인중")
         # 모든 강좌번호에 대해 검색해서 결과 저장하기
         course_nos = target_courses[subject_id]
         records = course_no_to_records(subject_id, course_nos)
