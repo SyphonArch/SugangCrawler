@@ -5,7 +5,7 @@ import re
 bait_regex = r'\d+ \(\d+\)'  # 정원 (재학생)
 record_start = '<tr'
 record_end = '</tr>'
-page_number_regex = r'<a href="javascript:fnGotoPage\((\d+)\);"'
+search_result_count_regex = r'검색건수\s*<span.*>(\d+)</span>\s*건'
 
 fields = ['교과구분', '개설대학', '개설학과', '이수과정', '학년', '교과목번호', '강좌번호', '교과목명',
           '학점-강의-실습', '수업교시', '수업형태', '강의실', '주담당교수', '강의계획서', '정원(재학생)',
@@ -21,29 +21,22 @@ def search(subject_id, page_no):
     return req.text
 
 
-def auto_search(subject_id):
-    pages = []
+def multipage_search(subject_id):
     page_no_to_check = 1
-    target_page_no = 1
-    while True:
-        while page_no_to_check <= target_page_no:
-            pages.append(search(subject_id, page_no_to_check))
-            page_no_to_check += 1
-        max_page_no = find_max_page(pages[-1])
-        if max_page_no > target_page_no:
-            target_page_no = max_page_no
-        else:
-            break
+    pages = [search(subject_id, page_no_to_check)]
+    target_page_no = find_max_page(pages[0])
+    for page_no_to_check in range(2, target_page_no + 1):
+        pages.append(search(subject_id, page_no_to_check))
     return '\n'.join(pages)
 
 
 def find_max_page(html_text):
-    pattern = re.compile(page_number_regex)
-    page_numbers = list(map(int, pattern.findall(html_text)))
-    if len(page_numbers) == 0:
-        return 1  # 페이지가 하나인 경우, 다음 페이지로 가는 링크가 없다
-    else:
-        return max(page_numbers)
+    records_per_page = 10
+    pattern = re.compile(search_result_count_regex)
+    pattern_matches = pattern.findall(html_text)
+    assert len(pattern_matches) == 1
+    record_count = int(pattern_matches[0])
+    return (record_count + records_per_page - 1) // records_per_page
 
 
 def bidirectional_search(text, start_pos):
@@ -98,14 +91,14 @@ def parse_record(record_text):
 
 
 def main():
-    html = auto_search('033.020')  # 통계학실험
+    html = multipage_search('033.020')  # 통계학실험
     record_texts = get_records(html)
     records = [parse_record(record_text) for record_text in record_texts]
     for record in records:
         pprint(record)
-        #print('\n\n')
+        print('\n\n')
 
-    #print(f"{len(records)} records found.")
+    print(f"{len(records)} records found.")
 
 
 if __name__ == '__main__':
