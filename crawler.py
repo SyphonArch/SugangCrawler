@@ -69,8 +69,6 @@ def parse_record(record_text):
     return record_data
 
 
-from time import time
-
 if __name__ == '__main__':
     html = search('033.019')  # 통계학
     record_texts = get_records(html)
