@@ -111,15 +111,18 @@ def course_no_to_records(subject_id, course_nos):
 
 def main():
     target_subject_id = 'L0440.000600'
-    target_course_nos = [3, 24, 62]
+    target_course_nos = [3, 13, 23]
     records = course_no_to_records(target_subject_id, target_course_nos)
 
-    for record in records:
-        pprint(record)
-        print('\n\n')
+    #for record in records:
+        #pprint(record)
+        #print('\n\n')
 
-    print(f"{len(records)} records found.")
+    #print(f"{len(records)} records found.")
 
 
 if __name__ == '__main__':
+    from time import time
+    st = time()
     main()
+    print(time() - st)
