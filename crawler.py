@@ -2,6 +2,7 @@ import requests
 from pprint import pprint
 import re
 
+records_per_page = 10
 bait_regex = r'\d+ \(\d+\)'  # 정원 (재학생)
 record_start = '<tr'
 record_end = '</tr>'
@@ -30,8 +31,17 @@ def multipage_search(subject_id):
     return '\n'.join(pages)
 
 
+def course_no_search(subject_id, course_nos):
+    page_no_set = set()
+    for course_no in course_nos:
+        page_no_set.add((course_no + records_per_page - 1) // records_per_page)
+    pages = []
+    for page_no in page_no_set:
+        pages.append(search(subject_id, page_no))
+    return '\n'.join(pages)
+
+
 def find_max_page(html_text):
-    records_per_page = 10
     pattern = re.compile(search_result_count_regex)
     pattern_matches = pattern.findall(html_text)
     assert len(pattern_matches) == 1
@@ -50,7 +60,7 @@ def bidirectional_search(text, start_pos):
     return front, back
 
 
-def get_records(html_text):
+def extract_records(html_text):
     pattern = re.compile(bait_regex)
     bait_indexes = [m.start() for m in re.finditer(pattern, html_text)]
 
@@ -90,10 +100,20 @@ def parse_record(record_text):
     return record_data
 
 
+def course_no_to_records(subject_id, course_nos):
+    html_text = course_no_search(subject_id, course_nos)
+    all_record_texts = extract_records(html_text)
+    all_records = [parse_record(record_text) for record_text in all_record_texts]
+
+    filtered_records = [record for record in all_records if int(record['강좌번호']) in course_nos]
+    return filtered_records
+
+
 def main():
-    html = multipage_search('033.020')  # 통계학실험
-    record_texts = get_records(html)
-    records = [parse_record(record_text) for record_text in record_texts]
+    target_subject_id = 'L0440.000600'
+    target_course_nos = [3, 24, 62]
+    records = course_no_to_records(target_subject_id, target_course_nos)
+
     for record in records:
         pprint(record)
         print('\n\n')
