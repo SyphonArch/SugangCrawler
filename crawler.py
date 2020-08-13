@@ -15,7 +15,7 @@ url = 'http://sugang.snu.ac.kr/sugang/cc/cc100.action'
 
 
 def search(subject_id, page_no):
-    search_info = {'srchSbjtCd': subject_id, 'workType': 'S', 'pageNO': page_no}
+    search_info = {'srchSbjtCd': subject_id, 'workType': 'S', 'pageNo': page_no}
     with requests.Session() as session:
         req = session.post(url, search_info)
     return req.text
@@ -97,12 +97,16 @@ def parse_record(record_text):
     return record_data
 
 
-if __name__ == '__main__':
+def main():
     html = auto_search('033.020')  # 통계학실험
     record_texts = get_records(html)
     records = [parse_record(record_text) for record_text in record_texts]
     for record in records:
         pprint(record)
-        print('\n\n')
+        #print('\n\n')
 
-    print(f"{len(records)} records found.")
+    #print(f"{len(records)} records found.")
+
+
+if __name__ == '__main__':
+    main()
