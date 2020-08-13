@@ -13,9 +13,9 @@ def search(subject_id):
     return req.text
 
 
-def get_applicant_counts(html):
+def get_applicant_counts(html_text):
     pattern = re.compile(master_regex)
-    matches = pattern.findall(html)
+    matches = pattern.findall(html_text)
     return matches
 
 
