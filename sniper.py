@@ -31,4 +31,4 @@ while True:
                     print('Message Sent!')
                     initial_registrant_counts[course_id] = registrant_count
     print(initial_registrant_counts)
-    sleep(3)
+    sleep(3)  # delay between checks
