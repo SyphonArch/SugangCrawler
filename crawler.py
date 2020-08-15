@@ -126,7 +126,10 @@ def course_no_to_records(subject_id, course_nos):
     return filtered_records
 
 
-def main():
+if __name__ == '__main__':
+    from time import time
+    st = time()
+    
     target_subject_id = 'L0440.000600'
     target_course_nos = [3, 13, 23]
     records = course_no_to_records(target_subject_id, target_course_nos)
@@ -137,9 +140,4 @@ def main():
 
     #print(f"{len(records)} records found.")
 
-
-if __name__ == '__main__':
-    from time import time
-    st = time()
-    main()
     print(time() - st)
