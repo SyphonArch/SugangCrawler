@@ -6,10 +6,10 @@ from email.message import EmailMessage
 SMTP_PASS = getpass("Email password: ")
 
 
-def send(subject, content):
+def send(to, subject, content):
     # Craft the email using email.message.EmailMessage
     from_email = SMTP_USER
-    to_emails = [SMTP_USER]
+    to_emails = [to]
     email_message = EmailMessage()
     email_message.add_header('To', ', '.join(to_emails))
     email_message.add_header('From', from_email)
